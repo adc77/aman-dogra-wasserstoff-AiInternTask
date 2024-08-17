@@ -50,6 +50,10 @@ class SegmentationModel:
                 unique_boxes.append(box)
                 unique_scores.append(score)
                 unique_masks.append(mask)
+        
+        if not unique_boxes:  # If no objects detected
+            return torch.empty(0, 4), torch.empty(0, dtype=torch.long), torch.empty(0), torch.empty(0, 1, 1, 1)
+        
         return torch.stack(unique_boxes), torch.tensor(unique_labels), torch.tensor(unique_scores), torch.stack(unique_masks)
 
     def segment_image(self, image_path, confidence_threshold=0.3, nms_threshold=0.3):
@@ -67,6 +71,9 @@ class SegmentationModel:
         labels = prediction['labels'][mask]
         scores = prediction['scores'][mask]
         masks = prediction['masks'][mask]
+
+        if len(boxes) == 0:  # If no objects detected after filtering
+            return image_tensor.squeeze().permute(1, 2, 0).cpu().numpy(), torch.empty(0, 1, 1, 1), torch.empty(0, 4), torch.empty(0, dtype=torch.long), torch.empty(0)
 
         # Apply non-maximum suppression
         keep = nms(boxes, scores, nms_threshold)
@@ -89,10 +96,22 @@ class SegmentationModel:
 
         if len(masks) > 0:
             masks = masks.squeeze().cpu().numpy()
-            cmap = plt.cm.get_cmap('tab20')
+            h, w = image_np.shape[:2]
+            cmap = plt.colormaps['tab20']  # Updated to use new colormap syntax
             for i, (mask, box, label, score) in enumerate(zip(masks, boxes, labels, scores)):
                 color = cmap(i % 20)[:3]
-                plt.imshow(mask, alpha=0.3, cmap=plt.cm.colors.ListedColormap([color]))
+                # Reshape the mask to match the image dimensions
+                if mask.ndim == 1:
+                    mask = mask.reshape(1, -1)  # Reshape to 2D
+                if mask.shape[-1] == h * w:
+                    mask = mask.reshape(h, w)
+                elif mask.shape[-1] == w:
+                    mask = mask.reshape(-1, w)
+                else:
+                    print(f"Warning: Mask shape {mask.shape} doesn't match image shape {image_np.shape}")
+                    continue  # Skip this mask
+
+                plt.imshow(mask, alpha=0.3, cmap=plt.colormaps.get_cmap('tab20'))
                 x, y, w, h = box.cpu().numpy()
                 plt.gca().add_patch(plt.Rectangle((x, y), w - x, h - y, fill=False, edgecolor=color, linewidth=2))
                 class_name = self.coco_names[label] if label < len(self.coco_names) else f"Class {label}"
@@ -109,5 +128,5 @@ def main(image_path):
 
 if __name__ == "__main__":
     # Update this path to the actual location of your image file
-    image_path = r'data\input_images\image.jpg'
+    image_path = r'data\input_images\test_image4.jpg'
     main(image_path)
