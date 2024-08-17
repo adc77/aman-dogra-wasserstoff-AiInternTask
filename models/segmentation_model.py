@@ -1,43 +1,113 @@
 import torch
 import torchvision
-from torchvision import transforms
+from torchvision.transforms import functional as F
+from torchvision.ops import nms
 from PIL import Image
 import matplotlib.pyplot as plt
+import numpy as np
 
-# Load a pre-trained DeepLabV3 model
-model = torchvision.models.segmentation.deeplabv3_resnet101(pretrained=True)
-model.eval()
+class SegmentationModel:
+    def __init__(self):
+        self.model = torchvision.models.detection.maskrcnn_resnet50_fpn(weights=torchvision.models.detection.MaskRCNN_ResNet50_FPN_Weights.DEFAULT)
+        self.model.eval()
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model.to(self.device)
+        
+        # Load COCO class names
+        self.coco_names = self.load_coco_names()
 
-# Image transformations
-preprocess = transforms.Compose([
-    transforms.Resize((520, 520)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+    def load_coco_names(self):
+        # COCO class names
+        return [
+            '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
+            'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A', 'stop sign',
+            'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+            'elephant', 'bear', 'zebra', 'giraffe', 'N/A', 'backpack', 'umbrella', 'N/A', 'N/A',
+            'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+            'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
+            'bottle', 'N/A', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl',
+            'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
+            'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table',
+            'N/A', 'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+            'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
+            'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+        ]
 
-# Load and preprocess the image
-input_image = Image.open("image.jpg")
-input_tensor = preprocess(input_image)
-input_batch = input_tensor.unsqueeze(0)  # Create a mini-batch as expected by the model
+    def preprocess_image(self, image):
+        # Normalize the image
+        image = F.normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        return image
 
-# Check if a GPU is available and move the input and model to GPU
-if torch.cuda.is_available():
-    input_batch = input_batch.to('cuda')
-    model.to('cuda')
+    def post_process(self, boxes, labels, scores, masks):
+        # Remove duplicate detections
+        unique_labels = []
+        unique_boxes = []
+        unique_scores = []
+        unique_masks = []
+        for box, label, score, mask in zip(boxes, labels, scores, masks):
+            if label not in unique_labels:
+                unique_labels.append(label)
+                unique_boxes.append(box)
+                unique_scores.append(score)
+                unique_masks.append(mask)
+        return torch.stack(unique_boxes), torch.tensor(unique_labels), torch.tensor(unique_scores), torch.stack(unique_masks)
 
-# Perform inference
-with torch.no_grad():
-    output = model(input_batch)['out'][0]
-output_predictions = output.argmax(0)
+    def segment_image(self, image_path, confidence_threshold=0.3, nms_threshold=0.3):
+        # Load and preprocess the image
+        image = Image.open(image_path).convert("RGB")
+        image_tensor = self.preprocess_image(F.to_tensor(image).unsqueeze(0).to(self.device))
 
-# Display the original image
-plt.figure(figsize=(10, 10))
-plt.subplot(1, 2, 1)
-plt.title("Original Image")
-plt.imshow(input_image)
+        # Perform inference
+        with torch.no_grad():
+            prediction = self.model(image_tensor)[0]
 
-# Display the segmentation output
-plt.subplot(1, 2, 2)
-plt.title("Segmented Image")
-plt.imshow(output_predictions.cpu().numpy())
-plt.show()
+        # Filter predictions based on confidence threshold
+        mask = prediction['scores'] > confidence_threshold
+        boxes = prediction['boxes'][mask]
+        labels = prediction['labels'][mask]
+        scores = prediction['scores'][mask]
+        masks = prediction['masks'][mask]
+
+        # Apply non-maximum suppression
+        keep = nms(boxes, scores, nms_threshold)
+        boxes = boxes[keep]
+        labels = labels[keep]
+        scores = scores[keep]
+        masks = masks[keep]
+
+        # Post-processing
+        boxes, labels, scores, masks = self.post_process(boxes, labels, scores, masks)
+
+        # Convert image back to numpy for visualization
+        image_np = image_tensor.squeeze().permute(1, 2, 0).cpu().numpy()
+
+        return image_np, masks, boxes, labels, scores
+
+    def visualize_segmentation(self, image_np, masks, boxes, labels, scores):
+        plt.figure(figsize=(12, 8))
+        plt.imshow(image_np)
+
+        if len(masks) > 0:
+            masks = masks.squeeze().cpu().numpy()
+            cmap = plt.cm.get_cmap('tab20')
+            for i, (mask, box, label, score) in enumerate(zip(masks, boxes, labels, scores)):
+                color = cmap(i % 20)[:3]
+                plt.imshow(mask, alpha=0.3, cmap=plt.cm.colors.ListedColormap([color]))
+                x, y, w, h = box.cpu().numpy()
+                plt.gca().add_patch(plt.Rectangle((x, y), w - x, h - y, fill=False, edgecolor=color, linewidth=2))
+                class_name = self.coco_names[label] if label < len(self.coco_names) else f"Class {label}"
+                plt.text(x, y, f"{class_name}: {score:.2f}", bbox=dict(facecolor='yellow', alpha=0.5))
+
+        plt.axis('off')
+        plt.tight_layout()
+        plt.show()
+
+def main(image_path):
+    model = SegmentationModel()
+    image_np, masks, boxes, labels, scores = model.segment_image(image_path)
+    model.visualize_segmentation(image_np, masks, boxes, labels, scores)
+
+if __name__ == "__main__":
+    # Update this path to the actual location of your image file
+    image_path = r'data\input_images\image.jpg'
+    main(image_path)
