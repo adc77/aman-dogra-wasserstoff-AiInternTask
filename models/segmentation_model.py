@@ -128,5 +128,5 @@ def main(image_path):
 
 if __name__ == "__main__":
     # Update this path to the actual location of your image file
-    image_path = r'data\input_images\test_image4.jpg'
+    image_path = r'data\input_images\test_image5.jpg'
     main(image_path)

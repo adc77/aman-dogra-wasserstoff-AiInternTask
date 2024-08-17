@@ -8,7 +8,7 @@ def main():
     seg_model = EnsembleSegmentationModel()
 
     # Path to input image
-    input_image_path = "data/input_images/test_image4.jpg"
+    input_image_path = "data/input_images/test_image5.jpg"
 
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
