@@ -33,6 +33,8 @@ class SegmentationModel:
 
     def segment_image(self, image_path, points_per_side=32, pred_iou_thresh=0.88, stability_score_thresh=0.95):
         image = cv2.imread(image_path)
+        if image is None:
+           raise FileNotFoundError(f"Unable to read image file: {image_path}")
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         self.predictor.set_image(image)
