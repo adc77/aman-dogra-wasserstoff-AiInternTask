@@ -1,6 +1,8 @@
 import json
 import os
 import uuid
+import numpy as np
+import cv2  # Added this import
 
 class DataMapper:
     def __init__(self, output_dir='data/mapped_data'):
@@ -10,13 +12,22 @@ class DataMapper:
 
     def map_data(self, input_image_path, segmentation_data, analysis_data):
         master_id = str(uuid.uuid4())
-        self.master_data[master_id] = {}
+        self.master_data[master_id] = {'objects': {}}
         
         for obj in segmentation_data:
             object_id = obj['id']
-            self.master_data[master_id][object_id] = {
-                'bbox': obj.get('bbox', []),
-                'segmentation': obj.get('segmentation', []),
+            bbox = obj.get('bbox', [])
+            segmentation = obj.get('segmentation', [])
+            
+            # Convert to list if they're NumPy arrays
+            if isinstance(bbox, np.ndarray):
+                bbox = bbox.tolist()
+            if isinstance(segmentation, np.ndarray):
+                segmentation = segmentation.tolist()
+            
+            self.master_data[master_id]['objects'][object_id] = {
+                'bbox': bbox,
+                'segmentation': segmentation,
                 'identification': analysis_data.get(object_id, {}).get('identification', ''),
                 'extracted_text': analysis_data.get(object_id, {}).get('extracted_text', ''),
                 'summary': analysis_data.get(object_id, {}).get('summary', '')
@@ -24,9 +35,24 @@ class DataMapper:
         
         return master_id
 
+    def convert_to_json_serializable(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return obj
+
     def save_mapping(self, filename='mapped_data.json'):
-        with open(os.path.join(self.output_dir, filename), 'w') as f:
-            json.dump(self.master_data, f, indent=2)
+        mapping_path = os.path.join(self.output_dir, filename)
+        
+        serializable_data = json.loads(
+            json.dumps(self.master_data, default=self.convert_to_json_serializable)
+        )
+        
+        with open(mapping_path, 'w') as f:
+            json.dump(serializable_data, f, indent=2)
 
     def load_mapping(self, filename='mapped_data.json'):
         filepath = os.path.join(self.output_dir, filename)
@@ -40,51 +66,44 @@ class OutputGenerator:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-    def generate_output(self, master_id, mapped_data, original_image):
-        import matplotlib.pyplot as plt
-        import matplotlib.patches as patches
-        import pandas as pd
+    def generate_output(self, master_id, mapped_data, image):
+        # Create a copy of the image for drawing
+        output_image = image.copy()
 
-        # Create the figure and axes
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
+        # Prepare data for CSV
+        csv_data = []
 
-        # Display the original image with bounding boxes
-        ax1.imshow(original_image)
-        ax1.set_title('Original Image with Detected Objects')
+        # Check if 'objects' key exists
+        if 'objects' not in mapped_data[master_id]:
+            print(f"Warning: 'objects' key not found in mapped_data for master_id {master_id}")
+            return None, None
 
-        # Prepare data for the table
-        table_data = []
-
-        for obj_id, obj_info in mapped_data[master_id].items():
+        for obj_id, obj_info in mapped_data[master_id]['objects'].items():
             # Draw bounding box
-            bbox = obj_info['bbox']
-            rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1],
-                                     linewidth=2, edgecolor='r', facecolor='none')
-            ax1.add_patch(rect)
-            ax1.text(bbox[0], bbox[1], obj_id, color='r')
+            bbox = obj_info.get('bbox', [])
+            if bbox:
+                x1, y1, x2, y2 = bbox
+                cv2.rectangle(output_image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
-            # Prepare table data
-            table_data.append({
+            # Prepare CSV data
+            csv_data.append({
                 'Object ID': obj_id,
-                'Identification': obj_info['identification'],
-                'Extracted Text': obj_info['extracted_text'],
-                'Summary': obj_info['summary']
+                'Identification': obj_info.get('identification', ''),
+                'Extracted Text': obj_info.get('extracted_text', ''),
+                'Summary': obj_info.get('summary', '')
             })
 
-        # Create the table
-        df = pd.DataFrame(table_data)
-        ax2.axis('off')
-        ax2.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
-        ax2.set_title('Object Data Summary')
+        # Save output image
+        output_image_path = os.path.join(self.output_dir, f'{master_id}_output.jpg')
+        cv2.imwrite(output_image_path, output_image)
 
-        # Adjust layout and save the figure
-        plt.tight_layout()
-        output_path = os.path.join(self.output_dir, f'{master_id}_output.png')
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
-        plt.close()
+        # Save CSV
+        output_csv_path = os.path.join(self.output_dir, f'{master_id}_output.csv')
+        with open(output_csv_path, 'w', newline='') as csvfile:
+            fieldnames = ['Object ID', 'Identification', 'Extracted Text', 'Summary']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in csv_data:
+                writer.writerow(row)
 
-        # Save table data as CSV
-        csv_path = os.path.join(self.output_dir, f'{master_id}_table.csv')
-        df.to_csv(csv_path, index=False)
-
-        return output_path, csv_path
+        return output_image_path, output_csv_path

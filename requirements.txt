@@ -7,4 +7,6 @@ segment-anything
 clip
 sumy
 easyocr
+ultralytics
+
 

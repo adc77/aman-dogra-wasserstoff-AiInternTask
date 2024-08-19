@@ -8,6 +8,7 @@ from models.summarization_model import SummarizationModel
 import cv2
 import os
 import json
+import numpy as np
 
 def main():
     # Initialize models
@@ -93,8 +94,8 @@ if __name__ == "__main__":
     main()
 
 """
-
-from models.segmentation_sam import SegmentationModel, EnsembleSegmentationModel
+from models.segmentation_yolo import SegmentationModel
+# from models.segmentation_sam import SegmentationModel, EnsembleSegmentationModel
 from utils.object_extraction import ObjectExtractor
 from models.identification_model import IdentificationModel
 from models.text_extraction_model import TextExtractionModel
@@ -106,7 +107,7 @@ import json
 
 def main():
     # Initialize models
-    seg_model = SegmentationModel()
+    seg_model = SegmentationModel(conf_threshold=0.5)
     extractor = ObjectExtractor()
     id_model = IdentificationModel()
     text_model = TextExtractionModel()
@@ -115,13 +116,24 @@ def main():
     output_gen = OutputGenerator()
 
     # Path to input image
-    input_image_path = "data/input_images/test_image8.jpg"
+    input_image_path = "data/input_images/test_image1.jpg"
 
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
 
+    # adding to check
+    # Visualize segmentation
+    segmented_image = seg_model.visualize_segmentation(image, masks)
+
+    # Save the segmented image
+    output_path = "data/output/segmented_image.jpg"
+    cv2.imwrite(output_path, cv2.cvtColor(segmented_image, cv2.COLOR_RGB2BGR))
+
+    print(f"Segmented image saved to {output_path}")
+    # check
+
     # Extract objects
-    object_ids = extractor.extract_objects(image, masks)
+    object_ids = extractor.extract_objects(image, masks, max_objects=15)
 
     # Save metadata
     extractor.save_metadata()
@@ -130,7 +142,13 @@ def main():
     identifications = id_model.process_objects(extractor.output_dir)
 
     # Extract text from objects
-    text_data = text_model.process_objects(extractor.output_dir)
+    # text_data = text_model.process_objects(extractor.output_dir)
+    try:
+        text_data = text_model.process_objects(extractor.output_dir)
+    except Exception as e:
+        print(f"Error during text extraction: {str(e)}")
+        text_data = {}  # Use an empty dict if text extraction fails
+
 
     # Summarize objects
     summaries = sum_model.process_objects(identifications, text_data)
