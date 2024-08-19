@@ -1,6 +1,10 @@
 torch
 torchvision
-detectron2
 opencv-python
 numpy
 matplotlib
+segment-anything
+clip
+sumy
+easyocr
+

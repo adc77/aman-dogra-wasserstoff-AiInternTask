@@ -2,20 +2,20 @@
   {
     "id": "object_1",
     "bbox": [
-      1220,
-      824,
-      84,
-      99
+      0,
+      312,
+      129,
+      68
     ],
     "path": "data/segmented_objects\\object_1.png"
   },
   {
     "id": "object_2",
     "bbox": [
-      539,
-      1735,
-      68,
-      31
+      3,
+      383,
+      169,
+      91
     ],
     "path": "data/segmented_objects\\object_2.png"
   }
