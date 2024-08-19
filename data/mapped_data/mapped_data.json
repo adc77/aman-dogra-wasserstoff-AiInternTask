@@ -1,0 +1,28 @@
+{
+  "a907707f-d210-4f4b-91df-27798b5c7fe6": {
+    "object_1": {
+      "bbox": [
+        745,
+        742,
+        97,
+        35
+      ],
+      "segmentation": [],
+      "identification": "This image likely contains a knife (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+      "extracted_text": "",
+      "summary": "Object ID: object_1 Identified as: This image likely contains a knife (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+    },
+    "object_2": {
+      "bbox": [
+        604,
+        752,
+        117,
+        23
+      ],
+      "segmentation": [],
+      "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+      "extracted_text": "",
+      "summary": "Object ID: object_2 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+    }
+  }
+}

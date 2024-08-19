@@ -1,47 +1,3 @@
-
-"""
-from models.segmentation_sam import SegmentationModel, EnsembleSegmentationModel
-from utils.object_extraction import ObjectExtractor
-from models.identification_model import IdentificationModel
-import cv2
-import os
-import json
-
-def main():
-    # Initialize models
-    seg_model = SegmentationModel()
-    extractor = ObjectExtractor()
-    id_model = IdentificationModel()
-
-    # Path to input image
-    input_image_path = "data/input_images/test_image6.jpg"
-
-    # statement to see the full path being used
-    print("Attempting to read image from:", os.path.abspath(input_image_path))
-
-    # Perform segmentation
-    image, masks = seg_model.segment_image(input_image_path)
-
-    # Extract objects
-    object_ids = extractor.extract_objects(image, masks)
-
-    # Save metadata
-    extractor.save_metadata()
-
-    # Identify and describe objects
-    descriptions = id_model.process_objects(extractor.output_dir)
-
-    # Save descriptions
-    with open('data/object_descriptions.json', 'w') as f:
-        json.dump(descriptions, f, indent=2)
-
-    print("Segmentation, extraction, and identification complete.")
-    print(f"Extracted {len(object_ids)} objects.")
-    print("Object descriptions saved to data/object_descriptions.json")
-
-if __name__ == "__main__":
-    main()
-
 """
 
 from models.segmentation_sam import SegmentationModel, EnsembleSegmentationModel
@@ -132,6 +88,73 @@ def main():
     print("Segmentation, extraction, identification, text extraction, and summarization complete.")
     print(f"Analyzed {len(object_ids)} objects.")
     print("Object analysis saved to data/object_analysis.json")
+
+if __name__ == "__main__":
+    main()
+
+"""
+
+from models.segmentation_sam import SegmentationModel, EnsembleSegmentationModel
+from utils.object_extraction import ObjectExtractor
+from models.identification_model import IdentificationModel
+from models.text_extraction_model import TextExtractionModel
+from models.summarization_model import SummarizationModel
+from utils.data_mapping import DataMapper, OutputGenerator
+import cv2
+import os
+import json
+
+def main():
+    # Initialize models
+    seg_model = SegmentationModel()
+    extractor = ObjectExtractor()
+    id_model = IdentificationModel()
+    text_model = TextExtractionModel()
+    sum_model = SummarizationModel()
+    data_mapper = DataMapper()
+    output_gen = OutputGenerator()
+
+    # Path to input image
+    input_image_path = "data/input_images/test_image8.jpg"
+
+    # Perform segmentation
+    image, masks = seg_model.segment_image(input_image_path)
+
+    # Extract objects
+    object_ids = extractor.extract_objects(image, masks)
+
+    # Save metadata
+    extractor.save_metadata()
+
+    # Identify objects
+    identifications = id_model.process_objects(extractor.output_dir)
+
+    # Extract text from objects
+    text_data = text_model.process_objects(extractor.output_dir)
+
+    # Summarize objects
+    summaries = sum_model.process_objects(identifications, text_data)
+
+    # Combine all data
+    final_data = {}
+    for object_id in object_ids:
+        final_data[object_id] = {
+            "identification": identifications.get(object_id, ""),
+            "extracted_text": text_data.get(object_id, ""),
+            "summary": summaries.get(object_id, "")
+        }
+
+    # Map data
+    master_id = data_mapper.map_data(input_image_path, extractor.metadata, final_data)
+    data_mapper.save_mapping()
+
+    # Generate output
+    output_image_path, output_csv_path = output_gen.generate_output(master_id, data_mapper.master_data, image)
+
+    print("Segmentation, extraction, identification, text extraction, summarization, and output generation complete.")
+    print(f"Analyzed {len(object_ids)} objects.")
+    print(f"Final output image saved to {output_image_path}")
+    print(f"Final output table saved to {output_csv_path}")
 
 if __name__ == "__main__":
     main()
