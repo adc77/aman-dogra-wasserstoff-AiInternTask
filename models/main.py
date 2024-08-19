@@ -67,11 +67,39 @@ def main():
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
 
+    # statement to see the full path being used
+    print("Attempting to read image from:", os.path.abspath(input_image_path))
+
+    # adding to check
+    # Visualize segmentation
+    segmented_image = seg_model.visualize_segmentation(image, masks)
+
+    # Save the segmented image
+    output_path = "data/output/segmented_image.jpg"
+    cv2.imwrite(output_path, cv2.cvtColor(segmented_image, cv2.COLOR_RGB2BGR))
+
+    print(f"Segmented image saved to {output_path}")
+
+    # Extract and save individual objects
+    for i, mask in enumerate(masks):
+        object_image = image.copy()
+        object_image[~mask] = 0
+
+        object_path = f"data/segmented_objects/object_{i}.jpg"
+        cv2.imwrite(object_path, cv2.cvtColor(object_image, cv2.COLOR_RGB2BGR))
+        print(f"Object {i} saved to {object_path}")
+    # adding to check
+
     # Extract objects
     object_ids = extractor.extract_objects(image, masks)
 
     # Save metadata
     extractor.save_metadata()
+
+    #check
+     # Identify and describe objects
+    descriptions = id_model.process_objects(extractor.output_dir)
+    #check
 
     # Identify objects
     identifications = id_model.process_objects(extractor.output_dir)
@@ -91,6 +119,12 @@ def main():
             "summary": summaries.get(object_id, "")
         }
 
+    # check
+    # Save descriptions
+    with open('data/object_descriptions.json', 'w') as f:
+        json.dump(descriptions, f, indent=2)
+    #check
+    
     # Save final data
     with open('data/object_analysis.json', 'w') as f:
         json.dump(final_data, f, indent=2)
