@@ -1,32 +1,38 @@
 import streamlit as st
-import cv2
-import numpy as np
-from segmentation_model import SegmentationModel
+import os
+from models.main import main
 
-def main():
-    st.title("Instance Segmentation")
-    st.write("Upload an image.")
+def app():
+    st.title("Object Analysis App")
 
-    # File uploader for image input
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+    # File uploader
+    uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        # Read the image file
-        image = np.array(bytearray(uploaded_file.read()), dtype=np.uint8)
-        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        # Save the uploaded file to the "data/input_images" directory
+        input_image_path = os.path.join("data", "input_images", uploaded_file.name)
+        with open(input_image_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
 
-        # Display the uploaded image
-        st.image(image, channels="BGR", caption="Uploaded Image", use_column_width=True)
+        st.write(f"Analyzing image: {uploaded_file.name}")
 
-        # Create an instance of the segmentation model
-        segmentation_model = SegmentationModel(output_dir='output')
+        # Run the main function from main.py
+        output_image_path, output_csv_path = main(input_image_path)
 
-        # Perform segmentation
-        output_image_path = segmentation_model.segment_image(uploaded_file)
+        # Display the output image
+        st.image(output_image_path, caption="Analyzed Image")
 
-        # Read and display the segmented image
-        segmented_image = cv2.imread(output_image_path)
-        st.image(segmented_image, channels="BGR", caption="Segmented Image", use_column_width=True)
+        # Download the output CSV file
+        with open(output_csv_path, "r") as f:
+            csv_data = f.read()
+        st.download_button(
+            label="Download output CSV",
+            data=csv_data,
+            file_name="object_analysis.csv",
+            mime="text/csv",
+        )
+
+        st.write("Analysis complete!")
 
 if __name__ == "__main__":
-    main()
+    app()
