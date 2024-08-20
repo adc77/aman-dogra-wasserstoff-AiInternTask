@@ -101,6 +101,7 @@ from models.identification_model import IdentificationModel
 from models.text_extraction_model import TextExtractionModel
 from models.summarization_model import SummarizationModel
 from utils.data_mapping import DataMapper, OutputGenerator
+from utils.preprocessing import preprocess_image
 import cv2
 import os
 import json
@@ -117,6 +118,7 @@ def main():
 
     # Path to input image
     input_image_path = "data/input_images/test_image5.jpg"
+    image = preprocess_image(input_image_path)
 
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
