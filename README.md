@@ -14,7 +14,7 @@ This project implements an image processing pipeline that performs segmentation,
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/adc77/aman-dogra-wasserstoff-AiInternTask.git
    cd aman-dogra-wasserstoff-AiInternTask
    ```
 
