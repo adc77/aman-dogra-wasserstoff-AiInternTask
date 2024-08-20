@@ -5,7 +5,7 @@ import easyocr
 class TextExtractionModel:
     def __init__(self):
         # Initialize the OCR reader
-        self.reader = easyocr.Reader(['en'])  # For English text
+        self.reader = easyocr.Reader(['en'])  
 
     def extract_text(self, image_path):
         try:

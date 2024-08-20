@@ -19,7 +19,7 @@ class SummarizationModel:
         parser = PlaintextParser.from_string(full_text, Tokenizer("english"))
 
         # Generate summary
-        summary = self.summarizer(parser.document, sentences_count=2)  # Adjust sentence count as needed
+        summary = self.summarizer(parser.document, sentences_count=2)  
         
         return " ".join([str(sentence) for sentence in summary])
 

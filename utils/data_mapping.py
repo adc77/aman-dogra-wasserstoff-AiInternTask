@@ -3,7 +3,7 @@ import csv
 import os
 import uuid
 import numpy as np
-import cv2  # Added this import
+import cv2  
 
 class DataMapper:
     def __init__(self, output_dir='data/mapped_data'):

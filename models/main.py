@@ -21,8 +21,7 @@ def main(input_image_path):
     output_gen = OutputGenerator()
 
     # Path to input image
-    # input_image_path = "data/input_images/test_image5.jpg"
-    image = preprocess_image(input_image_path)
+    #input_image_path = "data/input_images/test_image2.jpg"
 
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
@@ -53,7 +52,8 @@ def main(input_image_path):
         text_data = text_model.process_objects(extractor.output_dir)
     except Exception as e:
         print(f"Error during text extraction: {str(e)}")
-        text_data = {}  # Use an empty dict if text extraction fails
+        text_data = {}  
+        # Use an empty dict if text extraction fails
 
 
     # Summarize objects
@@ -72,7 +72,7 @@ def main(input_image_path):
     master_id = data_mapper.map_data(input_image_path, extractor.metadata, final_data)
     data_mapper.save_mapping()
 
-    # Generate output
+    # output
     output_image_path, output_csv_path = output_gen.generate_output(master_id, data_mapper.master_data, image)
 
     print("Segmentation, extraction, identification, text extraction, summarization, and output generation complete.")
@@ -81,4 +81,5 @@ def main(input_image_path):
     print(f"Final output table saved to {output_csv_path}")
 
 if __name__ == "__main__":
-    main()
+    input_image_path = "data/input_images/test_image2.jpg"  
+    main(input_image_path)  

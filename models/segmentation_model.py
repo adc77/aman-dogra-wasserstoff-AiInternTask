@@ -12,9 +12,7 @@ class SegmentationModel:
         self.model.eval()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
-        
-        # Load COCO class names
-        self.coco_names = self.load_coco_names()
+        self.coco_names = self.load_coco_names() # Load COCO class names
 
     def load_coco_names(self):
         # COCO class names
@@ -57,11 +55,10 @@ class SegmentationModel:
         return torch.stack(unique_boxes), torch.tensor(unique_labels), torch.tensor(unique_scores), torch.stack(unique_masks)
 
     def segment_image(self, image_path, confidence_threshold=0.3, nms_threshold=0.3):
-        # Load and preprocess the image
         image = Image.open(image_path).convert("RGB")
         image_tensor = self.preprocess_image(F.to_tensor(image).unsqueeze(0).to(self.device))
 
-        # Perform inference
+        # inference
         with torch.no_grad():
             prediction = self.model(image_tensor)[0]
 
@@ -72,7 +69,8 @@ class SegmentationModel:
         scores = prediction['scores'][mask]
         masks = prediction['masks'][mask]
 
-        if len(boxes) == 0:  # If no objects detected after filtering
+        # If no objects detected after filtering
+        if len(boxes) == 0:  
             return image_tensor.squeeze().permute(1, 2, 0).cpu().numpy(), torch.empty(0, 1, 1, 1), torch.empty(0, 4), torch.empty(0, dtype=torch.long), torch.empty(0)
 
         # Apply non-maximum suppression
@@ -109,7 +107,8 @@ class SegmentationModel:
                     mask = mask.reshape(-1, w)
                 else:
                     print(f"Warning: Mask shape {mask.shape} doesn't match image shape {image_np.shape}")
-                    continue  # Skip this mask
+                    continue  
+                    # Skip this mask
 
                 plt.imshow(mask, alpha=0.3, cmap=plt.colormaps.get_cmap('tab20'))
                 x, y, w, h = box.cpu().numpy()
@@ -125,8 +124,9 @@ def main(image_path):
     model = SegmentationModel()
     image_np, masks, boxes, labels, scores = model.segment_image(image_path)
     model.visualize_segmentation(image_np, masks, boxes, labels, scores)
-
+    
+"""
 if __name__ == "__main__":
-    # Update this path to the actual location of your image file
     image_path = r'data\input_images\test_image5.jpg'
     main(image_path)
+"""

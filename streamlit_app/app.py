@@ -7,7 +7,7 @@ from models.main import main
 def app():
     st.title("Object Analysis App")
 
-    # File uploader
+    # upload image 
     uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
