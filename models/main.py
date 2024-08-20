@@ -116,7 +116,7 @@ def main():
     output_gen = OutputGenerator()
 
     # Path to input image
-    input_image_path = "data/input_images/test_image1.jpg"
+    input_image_path = "data/input_images/test_image5.jpg"
 
     # Perform segmentation
     image, masks = seg_model.segment_image(input_image_path)
