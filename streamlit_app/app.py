@@ -1,8 +1,8 @@
 import sys
-sys.path.append('..')
+from models.main import main
 import streamlit as st
 import os
-from models.main import main
+
 
 def app():
     st.title("Object Analysis App")
