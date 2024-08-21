@@ -3,6 +3,7 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
+import nltk 
 
 class SummarizationModel:
     def __init__(self, language="english"):

@@ -9,6 +9,7 @@ sumy
 easyocr
 ultralytics
 streamlit
+nltk
 
 
 
