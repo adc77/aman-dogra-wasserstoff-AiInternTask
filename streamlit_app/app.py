@@ -1,7 +1,14 @@
 import sys
-from models.main import main
 import streamlit as st
 import os
+
+# Add the project root directory to the Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, os.pardir))
+sys.path.append(project_root)
+
+from models.main import main
+
 
 
 def app():
