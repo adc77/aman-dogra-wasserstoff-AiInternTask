@@ -1,0 +1,186 @@
+{
+  "0fa983bc-a768-4715-8133-c17dcddf0036": {
+    "objects": {
+      "object_0": {
+        "bbox": [
+          3,
+          0,
+          61,
+          0
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a bird (confidence: 1.00). Other possibilities include person (0.00), bicycle (0.00), car (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_0 Identified as: This image likely contains a bird (confidence: 1.00). Other possibilities include person (0.00), bicycle (0.00), car (0.00) Extracted text:"
+      },
+      "object_1": {
+        "bbox": [
+          3,
+          0,
+          76,
+          0
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a bird (confidence: 1.00). Other possibilities include person (0.00), knife (0.00), car (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_1 Identified as: This image likely contains a bird (confidence: 1.00). Other possibilities include person (0.00), knife (0.00), car (0.00) Extracted text:"
+      },
+      "object_2": {
+        "bbox": [
+          3,
+          0,
+          76,
+          24
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include book (0.00), knife (0.00), bird (0.00)",
+        "extracted_text": "3",
+        "summary": "Object ID: object_2 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include book (0.00), knife (0.00), bird (0.00) Extracted text: 3"
+      },
+      "object_3": {
+        "bbox": [
+          41,
+          0,
+          76,
+          24
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include knife (0.00), keyboard (0.00), motorcycle (0.00)",
+        "extracted_text": "Ig",
+        "summary": "Object ID: object_3 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include knife (0.00), keyboard (0.00), motorcycle (0.00) Extracted text: Ig"
+      },
+      "object_4": {
+        "bbox": [
+          41,
+          0,
+          99,
+          24
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a knife (confidence: 1.00). Other possibilities include keyboard (0.00), person (0.00), motorcycle (0.00)",
+        "extracted_text": "X* #d",
+        "summary": "Object ID: object_4 Identified as: This image likely contains a knife (confidence: 1.00). Other possibilities include keyboard (0.00), person (0.00), motorcycle (0.00) Extracted text: X* #d"
+      },
+      "object_5": {
+        "bbox": [
+          56,
+          0,
+          99,
+          39
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a knife (confidence: 1.00). Other possibilities include keyboard (0.00), person (0.00), motorcycle (0.00)",
+        "extracted_text": "1H",
+        "summary": "Object ID: object_5 Identified as: This image likely contains a knife (confidence: 1.00). Other possibilities include keyboard (0.00), person (0.00), motorcycle (0.00) Extracted text: 1H"
+      },
+      "object_6": {
+        "bbox": [
+          123,
+          18,
+          226,
+          54
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a keyboard (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_6 Identified as: This image likely contains a keyboard (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+      },
+      "object_7": {
+        "bbox": [
+          146,
+          18,
+          196,
+          39
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a keyboard (confidence: 1.00). Other possibilities include person (0.00), knife (0.00), motorcycle (0.00)",
+        "extracted_text": "l",
+        "summary": "Object ID: object_7 Identified as: This image likely contains a keyboard (confidence: 1.00). Other possibilities include person (0.00), knife (0.00), motorcycle (0.00) Extracted text: l"
+      },
+      "object_8": {
+        "bbox": [
+          266,
+          0,
+          301,
+          1
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_8 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+      },
+      "object_9": {
+        "bbox": [
+          191,
+          26,
+          226,
+          54
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include keyboard (0.00), knife (0.00), motorcycle (0.00)",
+        "extracted_text": "Y",
+        "summary": "Object ID: object_9 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include keyboard (0.00), knife (0.00), motorcycle (0.00) Extracted text: Y"
+      },
+      "object_10": {
+        "bbox": [
+          266,
+          0,
+          286,
+          1
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_10 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+      },
+      "object_11": {
+        "bbox": [
+          266,
+          0,
+          301,
+          1
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_11 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include bicycle (0.00), car (0.00), motorcycle (0.00) Extracted text:"
+      },
+      "object_12": {
+        "bbox": [
+          326,
+          48,
+          451,
+          99
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a person (confidence: 1.00). Other possibilities include keyboard (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "133",
+        "summary": "Object ID: object_12 Identified as: This image likely contains a person (confidence: 1.00). Other possibilities include keyboard (0.00), car (0.00), motorcycle (0.00) Extracted text: 133"
+      },
+      "object_13": {
+        "bbox": [
+          423,
+          0,
+          451,
+          39
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a knife (confidence: 1.00). Other possibilities include person (0.00), car (0.00), motorcycle (0.00)",
+        "extracted_text": "J",
+        "summary": "Object ID: object_13 Identified as: This image likely contains a knife (confidence: 1.00). Other possibilities include person (0.00), car (0.00), motorcycle (0.00) Extracted text: J"
+      },
+      "object_14": {
+        "bbox": [
+          438,
+          0,
+          451,
+          9
+        ],
+        "segmentation": [],
+        "identification": "This image likely contains a knife (confidence: 1.00). Other possibilities include person (0.00), keyboard (0.00), motorcycle (0.00)",
+        "extracted_text": "",
+        "summary": "Object ID: object_14 Identified as: This image likely contains a knife (confidence: 1.00). Other possibilities include person (0.00), keyboard (0.00), motorcycle (0.00) Extracted text:"
+      }
+    }
+  }
+}

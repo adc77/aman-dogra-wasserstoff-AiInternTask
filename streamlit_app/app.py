@@ -37,7 +37,7 @@ def app():
         st.download_button(
             label="Download output CSV",
             data=csv_data,
-            file_name="object_analysis.csv",
+            file_name="output_csv_path.csv",
             mime="text/csv",
         )
 
