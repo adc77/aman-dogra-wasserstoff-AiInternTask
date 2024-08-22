@@ -125,8 +125,7 @@ def main(image_path):
     image_np, masks, boxes, labels, scores = model.segment_image(image_path)
     model.visualize_segmentation(image_np, masks, boxes, labels, scores)
     
-"""
+
 if __name__ == "__main__":
-    image_path = r'data\input_images\test_image5.jpg'
+    image_path = r'data\input_images\test_image1.jpg'
     main(image_path)
-"""
