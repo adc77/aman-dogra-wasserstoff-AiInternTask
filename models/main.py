@@ -81,7 +81,8 @@ def main(input_image_path):
     print(f"Final output table saved to {output_csv_path}")
 
     return output_image_path, output_csv_path
-
+"""
 if __name__ == "__main__":
     input_image_path = "data/input_images/test_image1.jpg"  
     main(input_image_path)  
+"""
