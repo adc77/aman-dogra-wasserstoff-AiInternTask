@@ -4,12 +4,13 @@
 This project implements an image processing pipeline that performs segmentation, object extraction, identification, text extraction, summarization, and output generation. It utilizes various models to analyze input images and generate structured output.
 
 ## Features
-- **Segmentation**: Uses a segmentation model to identify and segment objects in images.
-- **Object Extraction**: Extracts identified objects from the segmented image.
-- **Identification**: Identifies the extracted objects using a dedicated identification model.
-- **Text Extraction**: Extracts text from the identified objects.
-- **Summarization**: Summarizes the information related to the identified objects.
-- **Output Generation**: Generates an output image and a CSV file containing the results.
+- **Segmentation**: Tried using Mask R-CNN (segmentation_model.py) & Segment Anything Model (SAM)(segmentation_sam.py) initially, then finally used YOLOv8 (segmentation_yolo.py) for segmentation.
+- **Object Extraction**: Extracts identified objects from the segmented image and stores them with unique object IDs (used pillow and open cv for extraction)
+- **Identification**: Identifies the extracted objects using open ai's CLIP model (tells what the object is)
+- **Text Extraction**: Extracts text from the identified objects using easyOCR.
+- **Summarization**: Summarizes the information related to the identified objects using sumy python library.
+- **Data Mapping**: Maps the extracted data into a structured JSON format.
+- **Output Generation**: Generates an output image and an output CSV file containing containing all object id’s, identification, extracted text & summary.
 
 ## Installation
 1. Clone the repository:
