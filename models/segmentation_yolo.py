@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 class SegmentationModel:
-    def __init__(self, model_path=r'C:\Users\amand\OneDrive\Desktop\aman-dogra-wasserstoff-AiInternTask\yolov8x-seg.pt', conf_threshold=0.5):
+    def __init__(self, model_path=r'aman-dogra-wasserstoff-AiInternTask\yolov8x-seg.pt', conf_threshold=0.5):
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold
 
