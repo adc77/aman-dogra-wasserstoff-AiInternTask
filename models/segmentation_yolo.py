@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 class SegmentationModel:
-    def __init__(self, model_path=r'aman-dogra-wasserstoff-AiInternTask\yolov8x-seg.pt', conf_threshold=0.5):
+    def __init__(self, model_path=r'yolov8n-seg.pt', conf_threshold=0.5):
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold
 
@@ -48,7 +48,9 @@ class SegmentationModel:
 
     def visualize_segmentation(self, image, masks):
         segmented_image = image.copy()
+        
         for mask in masks:
             color = np.random.randint(0, 255, (3,), dtype=np.uint8)
             segmented_image[mask > 0] = segmented_image[mask > 0] * 0.5 + color * 0.5
+        
         return segmented_image

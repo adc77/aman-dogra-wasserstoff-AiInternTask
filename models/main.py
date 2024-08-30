@@ -12,7 +12,7 @@ import json
 
 def main(input_image_path):
     # Initialize models
-    seg_model = SegmentationModel(conf_threshold=0.5)
+    seg_model = SegmentationModel()
     extractor = ObjectExtractor()
     id_model = IdentificationModel()
     text_model = TextExtractionModel()
@@ -32,7 +32,8 @@ def main(input_image_path):
 
     # Save the segmented image
     output_path = "data/output/segmented_image.jpg"
-    cv2.imwrite(output_path, cv2.cvtColor(segmented_image, cv2.COLOR_RGB2BGR))
+    #cv2.imwrite(output_path, cv2.cvtColor(segment_image, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(output_path, segmented_image)
 
     print(f"Segmented image saved to {output_path}")
     # check
@@ -81,8 +82,7 @@ def main(input_image_path):
     print(f"Final output table saved to {output_csv_path}")
 
     return output_image_path, output_csv_path
-"""
+
 if __name__ == "__main__":
-    input_image_path = "data/input_images/test_image1.jpg"  
+    input_image_path = "data/input_images/test_image2.jpg"  
     main(input_image_path)  
-"""
