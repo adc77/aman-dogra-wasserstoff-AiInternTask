@@ -11,8 +11,9 @@ import os
 import json
 
 def main(input_image_path):
+    model_path = 'yolov8n-seg.pt'
     # Initialize models
-    seg_model = SegmentationModel()
+    seg_model = SegmentationModel(model_path = model_path)
     extractor = ObjectExtractor()
     id_model = IdentificationModel()
     text_model = TextExtractionModel()
@@ -28,8 +29,11 @@ def main(input_image_path):
 
     # adding to check
     # Visualize segmentation
-    segmented_image = seg_model.visualize_segmentation(image, masks)
-
+    if masks is not None:
+    # Visualize the segmentation
+        segmented_image = seg_model.visualize_segmentation(image, masks)
+    else:
+        print("No segmentation masks found.")
     # Save the segmented image
     output_path = "data/output/segmented_image.jpg"
     #cv2.imwrite(output_path, cv2.cvtColor(segment_image, cv2.COLOR_RGB2BGR))

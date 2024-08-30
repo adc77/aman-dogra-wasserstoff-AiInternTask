@@ -2,8 +2,10 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 
+
+model = YOLO('yolov8n-seg.pt')
 class SegmentationModel:
-    def __init__(self, model_path=r'yolov8n-seg.pt', conf_threshold=0.5):
+    def __init__(self, model_path, conf_threshold=0.5):
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold
 
